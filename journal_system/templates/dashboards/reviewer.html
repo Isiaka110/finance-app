@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Reviewer Dashboard</h2>
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Manuscript Title</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in items %}
+                    <tr>
+                        <td>{{ review.manuscript.title }}</td>
+                        <td>
+                            {% if review.status == 'PENDING' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-success">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'submit_review' review.id %}" class="btn btn-sm btn-primary">
+                                {% if review.status == 'PENDING' %}Start Review{% else %}Edit Review{% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

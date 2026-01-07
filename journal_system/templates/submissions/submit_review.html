@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm">
+                <h5>Manuscript Details</h5>
+                <hr>
+                <p><strong>Title:</strong> {{ manuscript.title }}</p>
+                <p><strong>Abstract:</strong> {{ manuscript.abstract }}</p>
+                <a href="{{ manuscript.file.url }}" class="btn btn-info w-100" target="_blank">Download Manuscript</a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card p-3 shadow-sm">
+                <h5>Submit Your Review</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success mt-3">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

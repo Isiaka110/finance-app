@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Editor Control Panel</h2>
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Current Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paper in items %}
+                    <tr>
+                        <td>{{ paper.title }}</td>
+                        <td>{{ paper.author.username }}</td>
+                        <td><span class="badge bg-info">{{ paper.get_status_display }}</span></td>
+                        <td>
+                            <a href="{% url 'assign_reviewer' paper.id %}" class="btn btn-sm btn-outline-primary">
+                                Assign Reviewer
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

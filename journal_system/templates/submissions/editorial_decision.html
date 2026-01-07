@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Final Decision: {{ manuscript.title }}</h2>
+<hr>
+<h4>Reviewer Feedback</h4>
+{% for review in reviews %}
+    <div class="card mb-3">
+        <div class="card-header">Reviewer: {{ review.reviewer.username }} - Score: {{ review.score }}/5</div>
+        <div class="card-body">
+            <p><strong>Recommendation:</strong> {{ review.recommendation }}</p>
+            <p>{{ review.comments }}</p>
+        </div>
+    </div>
+{% empty %}
+    <p>No reviews completed yet.</p>
+{% endfor %}
+
+<div class="card bg-light p-4">
+    <form method="post">
+        {% csrf_token %}
+        <label>Final Editorial Decision:</label>
+        <select name="decision" class="form-select mb-3">
+            <option value="ACCEPTED">Accept Manuscript</option>
+            <option value="REJECTED">Reject Manuscript</option>
+            <option value="REVISION_REQ">Request Revisions</option>
+        </select>
+        <button type="submit" class="btn btn-danger">Submit Official Decision</button>
+    </form>
+</div>
+{% endblock %}

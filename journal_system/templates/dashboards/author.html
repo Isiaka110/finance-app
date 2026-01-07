@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Submissions</h2>
+        <a href="{% url 'submit_paper' %}" class="btn btn-primary">Submit New Manuscript</a>
+    </div>
+
+    {% for paper in items %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h5 class="mb-1">{{ paper.title }}</h5>
+                    <small class="text-muted">Submitted on {{ paper.submission_date|date:"M d, Y" }}</small>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="progress-label mb-1 text-primary">
+                        Current Status: {{ paper.get_status_display }}
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        {% if paper.status == 'SUBMITTED' %}
+                            <div class="progress-bar bg-info" style="width: 25%"></div>
+                        {% elif paper.status == 'UNDER_REVIEW' %}
+                            <div class="progress-bar bg-warning" style="width: 60%"></div>
+                        {% elif paper.status == 'ACCEPTED' %}
+                            <div class="progress-bar bg-success" style="width: 100%"></div>
+                        {% elif paper.status == 'REJECTED' %}
+                            <div class="progress-bar bg-danger" style="width: 100%"></div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-2 text-end">
+                    <a href="{{ paper.file.url }}" class="btn btn-sm btn-outline-secondary" target="_blank">View PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-5">
+        <p class="text-muted">You haven't submitted any manuscripts yet.</p>
+    </div>
+    {% endfor %}
+{% endblock %}
