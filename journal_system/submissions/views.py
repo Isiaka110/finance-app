@@ -103,3 +103,51 @@ def editorial_decision(request, manuscript_id):
         return redirect('dashboard')
 
     return render(request, 'submissions/editorial_decision.html', {'manuscript': manuscript, 'reviews': reviews})
+
+
+
+@login_required
+def upload_revision(request, manuscript_id):
+    manuscript = get_object_or_404(Manuscript, id=manuscript_id, author=request.user)
+    
+    # Only allow upload if the Editor requested it
+    if manuscript.status != 'REVISION_REQ':
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = ManuscriptSubmissionForm(request.POST, request.FILES, instance=manuscript)
+        if form.is_valid():
+            revision = form.save(commit=False)
+            revision.version += 1 # Increment version
+            revision.status = 'SUBMITTED' # Reset status for Editor to see
+            revision.save()
+            return redirect('dashboard')
+    else:
+        form = ManuscriptSubmissionForm(instance=manuscript)
+        
+    return render(request, 'submissions/upload_revision.html', {
+        'form': form, 
+        'manuscript': manuscript
+    })
+
+
+
+import csv
+from django.http import HttpResponse
+
+@login_required
+def export_submissions_csv(request):
+    if request.user.role != 'EDITOR':
+        return HttpResponse("Unauthorized", status=401)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="manuscripts_report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Title', 'Author', 'Status', 'Date Submitted', 'Version'])
+
+    manuscripts = Manuscript.objects.all()
+    for m in manuscripts:
+        writer.writerow([m.title, m.author.username, m.get_status_display(), m.submission_date, m.version])
+
+    return response

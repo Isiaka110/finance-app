@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-warning">
+        <h4>Submit Revision for: {{ manuscript.title }}</h4>
+    </div>
+    <div class="card-body">
+        <p>Your previous version (v{{ manuscript.version }}) was reviewed. Please upload the corrected file below.</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-warning">Submit v{{ manuscript.version|add:1 }}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

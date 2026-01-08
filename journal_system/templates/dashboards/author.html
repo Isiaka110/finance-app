@@ -28,6 +28,11 @@
                         {% elif paper.status == 'REJECTED' %}
                             <div class="progress-bar bg-danger" style="width: 100%"></div>
                         {% endif %}
+                        {% if paper.status == 'REVISION_REQ' %}
+    <a href="{% url 'upload_revision' paper.id %}" class="btn btn-sm btn-warning">
+        Upload Revision (v{{ paper.version|add:1 }})
+    </a>
+{% endif %}
                     </div>
                 </div>
 

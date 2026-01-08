@@ -10,6 +10,11 @@ class Manuscript(models.Model):
     ACCEPTED = 'ACCEPTED'
     REJECTED = 'REJECTED'
     REVISION_REQ = 'REVISION_REQ'
+    version = models.IntegerField(default=1)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} (v{self.version})"
 
     STATUS_CHOICES = [
         (SUBMITTED, 'Submitted'),
