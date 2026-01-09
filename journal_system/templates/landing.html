@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-dark text-white py-5 mb-5 rounded shadow">
+    <div class="container py-5 text-center">
+        <h1 class="display-4 fw-bold">Academic Peer Review System</h1>
+        <p class="lead mb-4">A transparent, automated, and secure platform for scholarly manuscript submission and review.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 gap-3">Get Started</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">Author Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="feature col text-center">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary text-white fs-2 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+            </div>
+            <h3 class="fs-4">Submit Manuscripts</h3>
+            <p>Authors can easily upload their research work, track versions, and receive real-time updates on their submission progress.</p>
+        </div>
+        <div class="feature col text-center">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary text-white fs-2 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h3 class="fs-4">Double-Blind Review</h3>
+            <p>Our system ensures integrity through a robust review process, requiring a minimum of two positive endorsements for acceptance.</p>
+        </div>
+        <div class="feature col text-center">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary text-white fs-2 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <h3 class="fs-4">Career Growth</h3>
+            <p>Active authors are automatically identified for promotion to Reviewer and Editor roles based on their contribution history.</p>
+        </div>
+    </div>
+</div>
+
+<div class="container border-top pt-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2 class="fw-bold">Designed for Modern Research</h2>
+            <p class="text-muted">This project was built to solve the bottlenecks in academic publishing. Key features include:</p>
+            <ul class="list-unstyled">
+                <li><i class="bi bi-check2-circle text-success me-2"></i> Automated version control for revisions.</li>
+                <li><i class="bi bi-check2-circle text-success me-2"></i> Real-time author-reviewer messaging.</li>
+                <li><i class="bi bi-check2-circle text-success me-2"></i> Editor dashboards with CSV export reporting.</li>
+                <li><i class="bi bi-check2-circle text-success me-2"></i> Role-based access control (RBAC).</li>
+            </ul>
+        </div>
+        <div class="col-md-6 text-center">
+             <i class="bi bi-journal-text text-primary" style="font-size: 10rem; opacity: 0.1;"></i>
+        </div>
+    </div>
+</div>
+{% endblock %}

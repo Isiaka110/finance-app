@@ -1,30 +1,81 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h2>Final Decision: {{ manuscript.title }}</h2>
-<hr>
-<h4>Reviewer Feedback</h4>
-{% for review in reviews %}
-    <div class="card mb-3">
-        <div class="card-header">Reviewer: {{ review.reviewer.username }} - Score: {{ review.score }}/5</div>
-        <div class="card-body">
-            <p><strong>Recommendation:</strong> {{ review.recommendation }}</p>
-            <p>{{ review.comments }}</p>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Editorial Decision: {{ manuscript.title }}</h2>
+            <p class="text-muted">Author: {{ manuscript.author.username }} | Current Version: v{{ manuscript.version }}</p>
+            
+            <hr>
+
+            <h4>Reviewer Feedback</h4>
+            {% for review in reviews %}
+                <div class="card mb-3 border-left-primary shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="text-primary fw-bold">Reviewer: {{ review.reviewer.username }}</h6>
+                            <span class="badge {% if review.recommendation == 'REJECT' %}bg-danger{% else %}bg-success{% endif %}">
+                                {{ review.get_recommendation_display }}
+                            </span>
+                        </div>
+                        <p class="mb-1"><strong>Score:</strong> {{ review.score }}/5</p>
+                        <p class="text-muted italic small">"{{ review.comments|truncatechars:200 }}"</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="alert alert-warning">No completed reviews yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Final Decision</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="small fw-bold text-uppercase">Journal Criteria Check</label>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Completed Reviews
+                                <span class="badge bg-secondary rounded-pill">{{ reviews.count }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Positive Recommendations (2+)
+                                {% if is_ready %}
+                                    <span class="badge bg-success rounded-pill">✔ Ready</span>
+                                {% else %}
+                                    <span class="badge bg-danger rounded-pill">✘ Pending</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Select Status</label>
+                            <select name="decision" class="form-select border-primary">
+                                <option value="ACCEPTED" {% if not is_ready %}disabled{% endif %}>Accept (Requires 2 OKs)</option>
+                                <option value="REVISION_REQ">Request Revision</option>
+                                <option value="REJECTED">Reject Submission</option>
+                                <option value="UNDER_REVIEW">Keep Under Review</option>
+                            </select>
+                            {% if not is_ready %}
+                                <small class="text-danger mt-1 d-block">The "Accept" option is disabled until 2 positive reviews are received.</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn {% if is_ready %}btn-success{% else %}btn-primary{% endif %} btn-lg shadow-sm">
+                                Submit Decision
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-{% empty %}
-    <p>No reviews completed yet.</p>
-{% endfor %}
-
-<div class="card bg-light p-4">
-    <form method="post">
-        {% csrf_token %}
-        <label>Final Editorial Decision:</label>
-        <select name="decision" class="form-select mb-3">
-            <option value="ACCEPTED">Accept Manuscript</option>
-            <option value="REJECTED">Reject Manuscript</option>
-            <option value="REVISION_REQ">Request Revisions</option>
-        </select>
-        <button type="submit" class="btn btn-danger">Submit Official Decision</button>
-    </form>
 </div>
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>User Role Management</h2>
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Submissions</th>
+                    <th>Current Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.manuscripts.count }}</td>
+                    <td><span class="badge bg-secondary">{{ u.get_role_display }}</span></td>
+                    <td>
+                        <form method="post" class="d-flex gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ u.id }}">
+                            <select name="new_role" class="form-select form-select-sm" style="width: 120px;">
+                                <option value="AUTHOR" {% if u.role == 'AUTHOR' %}selected{% endif %}>Author</option>
+                                <option value="REVIEWER" {% if u.role == 'REVIEWER' %}selected{% endif %}>Reviewer</option>
+                                <option value="EDITOR" {% if u.role == 'EDITOR' %}selected{% endif %}>Editor</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
