@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row w-100">
+    <div class="col-12">
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div>
+                <strong>Authentication Successful!</strong> You have securely logged in using Two-Factor Authentication.
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                    <span class="h1 mb-0 text-secondary">{{ user.username[0].upper() }}</span>
+                </div>
+                <h4>{{ user.username }}</h4>
+                <p class="text-muted">Computer Science Dept.</p>
+                <span class="badge bg-success">Status: Active</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-white fw-bold">Current Semester Courses</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">CSC 401</span> - Computer System Security
+                    </div>
+                    <span class="badge bg-primary rounded-pill">3 Units</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">CSC 405</span> - Artificial Intelligence
+                    </div>
+                    <span class="badge bg-primary rounded-pill">3 Units</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">GST 301</span> - Entrepreneurship Studies
+                    </div>
+                    <span class="badge bg-secondary rounded-pill">2 Units</span>
+                </li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="btn btn-outline-primary btn-sm">View Full Timetable</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

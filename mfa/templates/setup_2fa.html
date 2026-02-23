@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center w-100">
+    <div class="col-md-6 col-lg-5">
+        <div class="card text-center p-4">
+            <div class="card-body">
+                <span class="badge bg-warning text-dark mb-3">Action Required</span>
+                <h3 class="card-title">Secure Your Account</h3>
+                <p class="card-text text-muted">Scan the QR code below with <b>Google Authenticator</b> to enable 2FA.</p>
+                
+                <div class="my-4 p-2 border rounded d-inline-block bg-light">
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="img-fluid" style="width: 200px;">
+                </div>
+
+                <div class="alert alert-secondary py-2" style="font-size: 0.9rem;">
+                    Manual Code: <code class="fw-bold">{{ secret }}</code>
+                </div>
+
+                <form action="{{ url_for('enable_2fa') }}" method="POST" class="mt-4">
+                    <div class="input-group mb-3">
+                        <input type="text" name="otp" class="form-control text-center" placeholder="Enter 6-digit Code" required style="font-size: 1.2rem; letter-spacing: 2px;">
+                        <button class="btn btn-success" type="submit">Verify & Enable</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
