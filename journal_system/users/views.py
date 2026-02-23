@@ -73,12 +73,12 @@ def manage_users(request):
 @login_required
 def request_promotion(request):
     if request.method == 'POST':
-        # In a real app, you might save this to a 'Request' model.
-        # For now, we'll mark the user's expertise as "PENDING REVIEW"
         user = request.user
-        user.expertise += "\n[SYSTEM: REQUESTED PROMOTION]"
+        current_expertise = user.expertise or ""
+        user.expertise = f"{current_expertise}\n[SYSTEM: REQUESTED PROMOTION]".strip()
         user.save()
         messages.info(request, "Your request has been sent to the Chief Editor.")
+
     return redirect('dashboard')
 
 from .forms import UserProfileForm # You will create this below

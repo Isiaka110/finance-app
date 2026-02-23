@@ -1,33 +1,74 @@
 {% extends 'base.html' %}
+
+{% block title %}Editor Panel | OJMS Portal{% endblock %}
+
 {% block content %}
-    <h2>Editor Control Panel</h2>
-    <div class="card shadow">
-        <div class="card-body">
-            <table class="table align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Current Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for paper in items %}
-                    <tr>
-                        <td>{{ paper.title }}</td>
-                        <td>{{ paper.author.username }}</td>
-                        <td><span class="badge bg-info">{{ paper.get_status_display }}</span></td>
-                        <td>
-                            <a href="{% url 'assign_reviewer' paper.id %}" class="btn btn-sm btn-outline-primary">
-                                Assign Reviewer
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<div class="row align-items-center mb-5">
+    <div class="col-md-7">
+        <h1 class="fw-bold h2 mb-1">Editor Control Panel</h1>
+        <p class="text-muted mb-0">Overseeing the academic lifecycle and publication quality.</p>
     </div>
-    <a href="{% url 'export_csv' %}" class="btn btn-secondary mb-3">Download Report (CSV)</a>
+    <div class="col-md-5 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'export_csv' %}" class="btn btn-outline-dark rounded-pill px-4 shadow-sm">
+            <i class="bi bi-download me-2"></i>Export Manuscript Report (CSV)
+        </a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-4 py-3 border-0">Manuscript Title</th>
+                    <th class="py-3 border-0">Author</th>
+                    <th class="py-3 border-0 text-center">Current Status</th>
+                    <th class="pe-4 py-3 border-0 text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in items %}
+                <tr>
+                    <td class="ps-4 py-4">
+                        <div class="fw-bold text-dark">{{ paper.title }}</div>
+                        <div class="small text-muted">Version {{ paper.version }} | Submitted {{
+                            paper.submission_date|date:"M d" }}</div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info bg-opacity-10 text-info rounded-circle me-2 d-flex align-items-center justify-content-center"
+                                style="width: 30px; height: 30px;">
+                                <i class="bi bi-person small"></i>
+                            </div>
+                            <span>{{ paper.author.username }}</span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span
+                            class="badge {% if paper.status == 'ACCEPTED' %}bg-success{% elif paper.status == 'REJECTED' %}bg-danger{% elif paper.status == 'UNDER_REVIEW' %}bg-primary{% else %}bg-secondary{% endif %} rounded-pill">
+                            {{ paper.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="pe-4 text-end">
+                        <div class="btn-group">
+                            <a href="{% url 'assign_reviewer' paper.id %}"
+                                class="btn btn-sm btn-outline-primary px-3 rounded-pill me-2">
+                                <i class="bi bi-people me-1"></i> Assign
+                            </a>
+                            <a href="{% url 'editorial_decision' paper.id %}"
+                                class="btn btn-sm btn-primary px-3 rounded-pill">
+                                <i class="bi bi-check2-square me-1"></i> Decision
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">No manuscripts currently active.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

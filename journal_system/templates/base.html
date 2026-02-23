@@ -3,42 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OJMS Portal | Academic Peer Review{% endblock %}</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Online Journal System</title>
-    <style>
-        .progress-label { font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-5">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'dashboard' %}">OJMS Portal</a>
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'landing' %}">
+                <i class="bi bi-journal-check fs-3 me-2"></i>
+                <span>OJMS PORTAL</span>
+            </a>
             
-            <div class="navbar-nav ms-auto align-items-center">
-                {% if user.is_authenticated %}
-                    <span class="nav-item text-white-50 me-3">
-                        <small>Logged in as: <strong>{{ user.username }}</strong> ({{ user.get_role_display }})</small>
-                    </span>
-                    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-light me-2">Dashboard</a>
-                    <form action="{% url 'logout' %}" method="post" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-danger">Logout</button>
-                    </form>
-                {% else %}
-                    <a href="{% url 'login' %}" class="nav-link">Login</a>
-                    <a href="{% url 'register' %}" class="btn btn-primary btn-sm ms-2">Sign Up</a>
-                {% endif %}
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <div class="navbar-nav ms-auto align-items-center">
+                    {% if user.is_authenticated %}
+                        <div class="nav-item dropdown me-3">
+                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <div class="bg-primary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    <span class="small fw-bold">{{ user.username|first|upper }}</span>
+                                </div>
+                                <span class="small">{{ user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                <li><h6 class="dropdown-header">Logged in as {{ user.get_role_display }}</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="nav-link me-2 text-white">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">Sign Up</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+    <!-- Main Content -->
+    <main class="container fade-in min-vh-100">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4" role="alert">
+                    <i class="bi {% if message.tags == 'success' %}bi-check-circle{% else %}bi-exclamation-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
 
-    <footer class="container text-center mt-5 py-3 text-muted border-top">
-        <small>&copy; 2026 Online Journal Management System</small>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-top mt-5 py-5">
+        <div class="container text-center">
+            <div class="mb-3">
+                <a class="navbar-brand text-decoration-none fs-4" href="#">OJMS PORTAL</a>
+            </div>
+            <p class="text-muted small">&copy; 2026 Academic Peer Review System. All rights reserved.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-decoration-none text-muted small">Terms</a>
+                <a href="#" class="text-decoration-none text-muted small">Privacy</a>
+                <a href="#" class="text-decoration-none text-muted small">Contact</a>
+            </div>
+        </div>
     </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

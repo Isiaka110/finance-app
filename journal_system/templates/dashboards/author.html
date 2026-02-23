@@ -1,125 +1,158 @@
 {% extends 'base.html' %}
 
+{% block title %}Dashboard | Author Portal{% endblock %}
+
 {% block content %}
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2 class="mb-0">My Submissions</h2>
-            <p class="text-muted">You have {{ submission_count }} manuscript{{ submission_count|pluralize }} in the system.</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <div class="btn-group">
-                <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-person-gear"></i> Update Bio/Data
-                </a>
-                <a href="{% url 'password_change' %}" class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-shield-lock"></i> Change Password
-                </a>
-            </div>
+<div class="row align-items-center mb-5">
+    <div class="col-md-7">
+        <h1 class="fw-bold h2 mb-1">My Manuscripts</h1>
+        <p class="text-muted mb-0">You have managed {{ submission_count }} scholarly submission{{
+            submission_count|pluralize }}.</p>
+    </div>
+    <div class="col-md-5 text-md-end mt-3 mt-md-0">
+        <div class="d-flex gap-2 justify-content-md-end">
+            <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                <i class="bi bi-person-gear me-1"></i> Update Profile
+            </a>
+            <a href="{% url 'submit_paper' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                <i class="bi bi-plus-lg me-1"></i> New Submission
+            </a>
         </div>
     </div>
+</div>
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center bg-white p-3 border rounded shadow-sm">
-                <div>
-                    {% if eligible_for_promotion %}
-                        <div class="d-flex align-items-center">
-                            <span class="fs-3 me-2">🌟</span>
-                            <div>
-                                <strong class="text-success d-block">Promotion Eligible!</strong>
-                                <form action="{% url 'request_promotion' %}" method="post" class="m-0">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-success py-0" style="font-size: 0.8rem;">Click to Request Reviewer Role</button>
-                                </form>
-                            </div>
-                        </div>
-                    {% else %}
-                        <span class="badge bg-light text-dark border">
-                            Next Milestone: {{ needed }} more paper{{ needed|pluralize }} for Reviewer status
-                        </span>
-                    {% endif %}
-                </div>
-                <a href="{% url 'submit_paper' %}" class="btn btn-primary">Submit New Manuscript</a>
-            </div>
+<!-- Milestone Helper -->
+{% if not user.is_reviewer %}
+
+<div class="card bg-primary bg-opacity-10 border-0 rounded-4 mb-5 shadow-none">
+    <div class="card-body d-flex align-items-center p-4">
+        <div class="rounded-circle bg-primary bg-opacity-25 p-3 me-3 text-primary">
+            <i class="bi bi-stars fs-4"></i>
+        </div>
+        <div>
+            {% if eligible_for_promotion %}
+            <h6 class="fw-bold mb-1 text-primary">Promotion Ready!</h6>
+            <p class="small mb-2 text-muted">You've reached 2+ submissions. Request your Reviewer credentials now.</p>
+            <form action="{% url 'request_promotion' %}" method="post" class="m-0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-primary rounded-pill">Claim Reviewer Role</button>
+            </form>
+            {% else %}
+            <h6 class="fw-bold mb-1 text-primary">Path to Reviewer</h6>
+            <p class="small mb-0 text-muted">Submit <strong>{{ needed }} more</strong> paper{{ needed|pluralize }} to
+                unlock Reviewer privileges.</p>
+            {% endif %}
         </div>
     </div>
+</div>
+{% endif %}
 
-    <hr>
-
+<div class="row">
     {% for paper in items %}
-    <div class="card mb-4 shadow-sm border-0">
-        <div class="card-body border-start border-4 {% if paper.status == 'ACCEPTED' %}border-success{% elif paper.status == 'REJECTED' %}border-danger{% else %}border-primary{% endif %}">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <h5 class="mb-1 fw-bold">{{ paper.title }}</h5>
-                    <div class="mb-2">
-                        <span class="badge bg-secondary">v{{ paper.version }}</span>
-                        <span class="badge {% if paper.is_ready_for_decision %}bg-success{% else %}bg-light text-dark border{% endif %}">
-                            Positive Reviews: {{ paper.get_positive_review_count }}/2 
-                            {% if paper.is_ready_for_decision %}(Ready){% endif %}
-                        </span>
-                    </div>
-                    <small class="text-muted"><i class="bi bi-calendar3"></i> Submitted: {{ paper.submission_date|date:"M d, Y" }}</small>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="progress-label fw-bold {% if paper.is_ready_for_decision and paper.status == 'UNDER_REVIEW' %}text-success{% else %}text-primary{% endif %}">
-                            {{ paper.get_status_display }}
-                            {% if paper.is_ready_for_decision and paper.status == 'UNDER_REVIEW' %}
-                                <small class="ms-1 text-success">(Reviews Complete!)</small>
-                            {% endif %}
-                        </div>
-                        
-                        {% if paper.status == 'REVISION_REQ' %}
-                            <a href="{% url 'upload_revision' paper.id %}" class="btn btn-sm btn-warning fw-bold py-0">Upload v{{ paper.version|add:1 }}</a>
-                        {% endif %}
+    <div class="col-12 mb-4">
+        <div class="card overflow-hidden border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="row g-0">
+                    <!-- Status Side Strip -->
+                    <div
+                        class="status-strip {% if paper.status == 'ACCEPTED' %}bg-status-accepted{% elif paper.status == 'REJECTED' %}bg-status-rejected{% elif paper.status == 'REVISION_REQ' %}bg-status-revision{% else %}bg-status-default{% endif %}">
                     </div>
 
-                    <div class="progress mb-2" style="height: 10px;">
-                        {% if paper.status == 'SUBMITTED' %}
-                            <div class="progress-bar bg-info" style="width: 25%"></div>
-                        {% elif paper.status == 'UNDER_REVIEW' %}
-                            {% if paper.is_ready_for_decision %}
-                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 90%"></div>
-                            {% else %}
-                                <div class="progress-bar bg-warning" style="width: 60%"></div>
-                            {% endif %}
-                        {% elif paper.status == 'REVISION_REQ' %}
-                            <div class="progress-bar bg-warning progress-bar-striped" style="width: 75%"></div>
-                        {% elif paper.status == 'ACCEPTED' %}
-                            <div class="progress-bar bg-success" style="width: 100%"></div>
-                        {% elif paper.status == 'REJECTED' %}
-                            <div class="progress-bar bg-danger" style="width: 100%"></div>
-                        {% endif %}
-                    </div>
-
-                    {% if paper.status == 'UNDER_REVIEW' %}
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-link text-decoration-none p-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#msg{{ paper.id }}">
-                                <i class="bi bi-envelope"></i> Send inquiry to reviewers?
-                            </button>
-                            <div class="collapse mt-2" id="msg{{ paper.id }}">
-                                <form action="{% url 'message_reviewers' paper.id %}" method="post" class="bg-light p-2 rounded border">
-                                    {% csrf_token %}
-                                    <textarea name="message" class="form-control form-control-sm mb-2" rows="2" placeholder="Ask about review delays..."></textarea>
-                                    <button type="submit" class="btn btn-sm btn-primary">Send Message</button>
-                                </form>
+                    <div class="col p-4">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <h4 class="fw-bold mb-1">{{ paper.title }}</h4>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-light text-dark border small fw-normal">v{{ paper.version
+                                        }}</span>
+                                    <span class="text-muted small"><i class="bi bi-clock me-1"></i>{{
+                                        paper.submission_date|date:"F d, Y" }}</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span
+                                    class="badge {% if paper.status == 'ACCEPTED' %}bg-success{% elif paper.status == 'REJECTED' %}bg-danger{% elif paper.status == 'REVISION_REQ' %}bg-warning text-dark{% else %}bg-primary{% endif %} mb-2 d-inline-block">
+                                    {{ paper.get_status_display }}
+                                </span>
+                                <div class="small fw-bold text-muted">
+                                    Reviews: {{ paper.get_positive_review_count }}/2
+                                    {% if paper.is_ready_for_decision %}<span
+                                        class="text-success ms-1">(Complete)</span>{% endif %}
+                                </div>
                             </div>
                         </div>
-                    {% endif %}
-                </div>
 
-                <div class="col-md-2 text-end">
-                    <a href="{{ paper.file.url }}" class="btn btn-sm btn-outline-dark" target="_blank">View PDF</a>
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <!-- Progress Bar -->
+                                <div class="progress mb-2" style="height: 8px; width: 100%;">
+                                    {% if paper.status == 'SUBMITTED' %}
+                                    <div class="progress-bar bg-primary opacity-50" style="width: 25%"></div>
+                                    {% elif paper.status == 'UNDER_REVIEW' %}
+                                    {% if paper.is_ready_for_decision %}
+                                    <div class="progress-bar bg-primary" style="width: 90%"></div>
+                                    {% else %}
+                                    <div class="progress-bar bg-primary" style="width: 60%"></div>
+                                    {% endif %}
+                                    {% elif paper.status == 'REVISION_REQ' %}
+                                    <div class="progress-bar bg-warning" style="width: 75%"></div>
+                                    {% elif paper.status == 'ACCEPTED' %}
+                                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                                    {% elif paper.status == 'REJECTED' %}
+                                    <div class="progress-bar bg-danger" style="width: 100%"></div>
+                                    {% endif %}
+                                </div>
+
+                                {% if paper.status == 'UNDER_REVIEW' %}
+                                <div class="mt-3">
+                                    <button class="btn btn-link text-primary text-decoration-none p-0 small fw-bold"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#inquiry{{ paper.id }}">
+                                        <i class="bi bi-chat-left-dots me-1"></i> Send inquiry to reviewers?
+                                    </button>
+                                    <div class="collapse mt-2" id="inquiry{{ paper.id }}">
+                                        <form action="{% url 'message_reviewers' paper.id %}" method="post"
+                                            class="bg-light p-3 rounded-4 border-0">
+                                            {% csrf_token %}
+                                            <textarea name="message" class="form-control form-control-sm mb-2" rows="2"
+                                                placeholder="Ask about review delays..."></textarea>
+                                            <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3">Send
+                                                Message</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <div class="d-flex gap-2 justify-content-lg-end">
+                                    {% if paper.status == 'REVISION_REQ' %}
+                                    <a href="{% url 'upload_revision' paper.id %}"
+                                        class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
+                                        Update Revision
+                                    </a>
+                                    {% endif %}
+                                    <a href="{{ paper.file.url }}" class="btn btn-outline-dark btn-sm rounded-pill px-3"
+                                        target="_blank">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i> View PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="text-center py-5 bg-white border rounded shadow-sm">
-        <p class="text-muted fs-5">You haven't submitted any manuscripts yet.</p>
-        <a href="{% url 'submit_paper' %}" class="btn btn-primary btn-lg">Start First Submission</a>
+    <div class="col-12 text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-inbox text-muted display-1 opacity-25"></i>
+        </div>
+        <h3 class="fw-bold">No Submissions Yet</h3>
+        <p class="text-muted mb-4 mx-auto" style="max-width: 400px;">Your research journey begins here. Submit your
+            first manuscript and start the collaborative peer review process today.</p>
+        <a href="{% url 'submit_paper' %}" class="btn btn-primary btn-lg rounded-pill px-5 shadow">Submit First
+            Paper</a>
     </div>
     {% endfor %}
+</div>
 {% endblock %}

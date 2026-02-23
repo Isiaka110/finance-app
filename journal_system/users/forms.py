@@ -4,13 +4,22 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 
 class JournalRegistrationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        # Removed 'role' from fields. It defaults to AUTHOR in the model/view.
         fields = UserCreationForm.Meta.fields + ('email', 'institution', 'expertise')
 
 
 class UserProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
     class Meta:
         model = CustomUser
         fields = ['first_name', 'last_name', 'email', 'expertise']

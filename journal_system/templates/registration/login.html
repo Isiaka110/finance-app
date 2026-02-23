@@ -1,14 +1,41 @@
 {% extends 'base.html' %}
 
+{% block title %}Login | OJMS Portal{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-4">
-        <form method="post" class="card p-4">
-            {% csrf_token %}
-            <h3 class="text-center">Login</h3>
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-dark">Login</button>
-        </form>
+<div class="row justify-content-center align-items-center min-vh-75">
+    <div class="col-md-5 col-lg-4">
+        <div class="card border-0 shadow-lg p-4 p-md-5 rounded-5">
+            <div class="text-center mb-4">
+                <div class="bg-primary bg-opacity-10 text-primary fs-1 mb-3 rounded-circle d-inline-flex align-items-center justify-content-center"
+                    style="width: 80px; height: 80px;">
+                    <i class="bi bi-person-lock"></i>
+                </div>
+                <h2 class="fw-bold">Sign In</h2>
+                <p class="text-muted small">Access your academic portal</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-danger extra-small">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary w-100 py-3 mt-3 shadow-sm rounded-pill">Login to
+                    Dashboard</button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <p class="small text-muted mb-0">Don't have an account?</p>
+                <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none small">Create Author
+                    Account</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
