@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import OnboardingPage from './pages/OnboardingPage';
 import Layout from './components/Layout';
@@ -20,13 +21,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/auth" element={user ? <Navigate to="/" replace /> : <AuthPage />} />
+        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+        <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
         <Route path="/welcome" element={
           <ProtectedRoute>
-            {user?.isNew ? <OnboardingPage /> : <Navigate to="/" replace />}
+            {user?.isNew ? <OnboardingPage /> : <Navigate to="/dashboard" replace />}
           </ProtectedRoute>
         } />
-        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+        <Route path="/dashboard" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="income" element={<IncomePage />} />
           <Route path="expenses" element={<ExpensePage />} />

@@ -3,11 +3,11 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
-    { path: '/', label: 'Dashboard', icon: '📊', end: true },
-    { path: '/income', label: 'Income', icon: '💰' },
-    { path: '/expenses', label: 'Expenses', icon: '💸' },
-    { path: '/savings', label: 'Savings Goals', icon: '🎯' },
-    { path: '/analytics', label: 'Analytics', icon: '📈' },
+    { path: '/dashboard', label: 'Dashboard', icon: '📊', end: true },
+    { path: '/dashboard/income', label: 'Income', icon: '💰' },
+    { path: '/dashboard/expenses', label: 'Expenses', icon: '💸' },
+    { path: '/dashboard/savings', label: 'Savings Goals', icon: '🎯' },
+    { path: '/dashboard/analytics', label: 'Analytics', icon: '📈' },
 ];
 
 export default function Layout() {
@@ -23,7 +23,7 @@ export default function Layout() {
 
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-brand">
-                    <div className="logo-icon">💵</div>
+                    <div className="logo-icon">💎</div>
                     <div>
                         <h2>FinTrack</h2>
                         <span>Student Finance</span>

@@ -21,7 +21,7 @@ export default function AuthPage() {
             const endpoint = tab === 'login' ? '/auth/login' : '/auth/register';
             const { data } = await API.post(endpoint, form);
             login(data.user, data.token, data.isNew);
-            navigate(data.isNew ? '/welcome' : '/');
+            navigate(data.isNew ? '/welcome' : '/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong');
         } finally {
@@ -33,7 +33,7 @@ export default function AuthPage() {
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-logo">
-                    <div className="logo-circle">💵</div>
+                    <div className="logo-circle">💎</div>
                     <h1>FinTrack</h1>
                     <p>Personal Finance &amp; Savings for Students</p>
                 </div>

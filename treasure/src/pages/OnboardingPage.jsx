@@ -38,7 +38,7 @@ export default function OnboardingPage() {
         if (step < STEPS.length - 1) { setStep(s => s + 1); return; }
         // Mark onboarding done
         login({ ...user, isNew: false }, localStorage.getItem('financeToken'), false);
-        navigate('/');
+        navigate('/dashboard');
     };
 
     const s = STEPS[step];
