@@ -50,7 +50,7 @@ export default function NotificationsPage() {
                                 }}
                                 onClick={() => n.link && navigate(n.link)}
                             >
-                                <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                                <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', textAlign: 'left' }}>
                                     <div style={{ fontSize: 20 }}>{ICONS[n.type] || '🔔'}</div>
                                     <div style={{ flex: 1 }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
