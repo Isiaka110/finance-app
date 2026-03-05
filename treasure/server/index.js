@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import goalRoutes from './routes/goalRoutes.js';
-
 import { getDb } from './db.js';
 
 dotenv.config();
@@ -12,9 +11,11 @@ dotenv.config();
 const app = express();
 
 // Initialize MongoDB
-getDb();
+getDb().catch(err => {
+    console.error('Initial DB Connect Failure:', err);
+});
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);

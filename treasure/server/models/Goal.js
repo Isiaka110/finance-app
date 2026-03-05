@@ -9,4 +9,4 @@ const SavingsGoalSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model('SavingsGoal', SavingsGoalSchema);
+export default mongoose.models.SavingsGoal || mongoose.model('SavingsGoal', SavingsGoalSchema);
