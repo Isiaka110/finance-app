@@ -54,27 +54,47 @@ export default function IncomePage() {
                 {loading ? <div className="empty-state"><p>Loading...</p></div>
                     : list.length === 0 ? <div className="empty-state"><div className="empty-icon">💰</div><p>No income recorded yet. Add your first entry!</p></div>
                         : (
-                            <div className="table-wrapper">
-                                <table>
-                                    <thead><tr><th>Date</th><th>Source/Category</th><th>Notes</th><th>Amount</th><th>Actions</th></tr></thead>
-                                    <tbody>
-                                        {list.map(t => (
-                                            <tr key={t._id}>
-                                                <td>{new Date(t.date).toLocaleDateString()}</td>
-                                                <td><strong>{t.category}</strong> {t.source && <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>· {t.source}</span>}</td>
-                                                <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || '—'}</td>
-                                                <td style={{ fontWeight: 700, color: 'var(--accent-dark)' }}>+{fmt(t.amount)}</td>
-                                                <td>
-                                                    <div style={{ display: 'flex', gap: 6 }}>
-                                                        <button className="btn-icon" onClick={() => openEdit(t)} title="Edit">✏️</button>
-                                                        <button className="btn-icon danger" onClick={() => handleDelete(t._id)} title="Delete">🗑️</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <>
+                                <div className="table-wrapper">
+                                    <table>
+                                        <thead><tr><th>Date</th><th>Source/Category</th><th>Notes</th><th>Amount</th><th>Actions</th></tr></thead>
+                                        <tbody>
+                                            {list.map(t => (
+                                                <tr key={t._id}>
+                                                    <td>{new Date(t.date).toLocaleDateString()}</td>
+                                                    <td><strong>{t.category}</strong> {t.source && <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>· {t.source}</span>}</td>
+                                                    <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || '—'}</td>
+                                                    <td style={{ fontWeight: 700, color: 'var(--accent-dark)' }}>+{fmt(t.amount)}</td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', gap: 6 }}>
+                                                            <button className="btn-icon" onClick={() => openEdit(t)} title="Edit">✏️</button>
+                                                            <button className="btn-icon danger" onClick={() => handleDelete(t._id)} title="Delete">🗑️</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div className="mobile-list-container">
+                                    {list.map(t => (
+                                        <div key={t._id} className="mobile-card">
+                                            <div className="mobile-card-main">
+                                                <div className="mobile-card-title">{t.category}</div>
+                                                <div className="mobile-card-sub">{new Date(t.date).toLocaleDateString()} • {t.note || '—'}</div>
+                                            </div>
+                                            <div className="mobile-card-side">
+                                                <div className="mobile-card-amount" style={{ color: 'var(--accent-dark)' }}>+{fmt(t.amount)}</div>
+                                                <div style={{ display: 'flex', gap: 8 }}>
+                                                    <button className="btn-icon" style={{ padding: '4px 8px' }} onClick={() => openEdit(t)}>✏️</button>
+                                                    <button className="btn-icon danger" style={{ padding: '4px 8px' }} onClick={() => handleDelete(t._id)}>🗑️</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
                         )}
             </div>
 

@@ -63,6 +63,20 @@ export default function SettingsPage() {
         }
     };
 
+    const handleDeleteAccount = async () => {
+        if (!window.confirm('CRITICAL: This will permanently delete your account and all financial data. Are you absolutely sure?')) return;
+
+        setLoading(true);
+        try {
+            await API.delete('/auth/profile');
+            logout();
+            navigate('/');
+        } catch (err) {
+            setMessage({ type: 'error', text: 'Error deleting account' });
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="page-wrapper">
             <div style={{ marginBottom: 24 }}>
@@ -140,9 +154,10 @@ export default function SettingsPage() {
                 <div className="card" style={{ borderLeft: '4px solid var(--danger)' }}>
                     <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: 'var(--danger)' }}>Danger Zone</h3>
                     <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 20 }}>
-                        Once you logout or delete your account, your session will end.
+                        Deleting your account will remove all your transactions, savings goals, and history. This action cannot be undone.
                     </p>
                     <div style={{ display: 'flex', gap: 12 }}>
+                        <button className="btn btn-danger" onClick={handleDeleteAccount} disabled={loading}>Delete Account</button>
                         <button className="btn btn-ghost" onClick={handleLogout}>Logout Session</button>
                     </div>
                 </div>

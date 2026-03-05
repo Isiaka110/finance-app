@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 
 const SECRET = process.env.JWT_SECRET || 'finance_secret';
@@ -60,6 +61,22 @@ export const updateProfile = async (req, res) => {
 
         await user.save();
         res.json({ success: true, user: { id: user._id, fullName: user.fullName, emailOrPhone: user.emailOrPhone } });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+export const deleteAccount = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Cleanup associated data - these models should be imported if not already
+        // For now, these are the core models
+        await mongoose.model('Transaction').deleteMany({ userId: req.userId });
+        await mongoose.model('SavingsGoal').deleteMany({ userId: req.userId });
+
+        res.json({ success: true, message: 'Account deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

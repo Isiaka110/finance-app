@@ -134,29 +134,49 @@ export default function Dashboard() {
             <div className="card" style={{ marginTop: 24 }}>
                 <div className="card-header">
                     <div className="card-title">Recent Transactions</div>
-                    <Link to="/income" className="btn btn-ghost btn-sm">View All</Link>
+                    <Link to="/dashboard/history" className="btn btn-ghost btn-sm">View All</Link>
                 </div>
                 {recent.length === 0
                     ? <div className="empty-state" style={{ padding: 32 }}><div className="empty-icon">📂</div><p>No transactions yet. Add your first income or expense!</p></div>
                     : (
-                        <div className="table-wrapper">
-                            <table>
-                                <thead><tr><th>Date</th><th>Category</th><th>Notes</th><th>Type</th><th>Amount</th></tr></thead>
-                                <tbody>
-                                    {recent.map(t => (
-                                        <tr key={t._id}>
-                                            <td>{new Date(t.date).toLocaleDateString()}</td>
-                                            <td>{t.category}</td>
-                                            <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || t.source || '—'}</td>
-                                            <td><span className={`badge badge-${t.type}`}>{t.type}</span></td>
-                                            <td style={{ fontWeight: 700, color: t.type === 'income' ? 'var(--accent-dark)' : 'var(--danger)' }}>
+                        <>
+                            <div className="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Date</th><th>Category</th><th>Notes</th><th>Type</th><th>Amount</th></tr></thead>
+                                    <tbody>
+                                        {recent.map(t => (
+                                            <tr key={t._id}>
+                                                <td>{new Date(t.date).toLocaleDateString()}</td>
+                                                <td>{t.category}</td>
+                                                <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || t.source || '—'}</td>
+                                                <td><span className={`badge badge-${t.type}`}>{t.type}</span></td>
+                                                <td style={{ fontWeight: 700, color: t.type === 'income' ? 'var(--accent-dark)' : 'var(--danger)' }}>
+                                                    {t.type === 'income' ? '+' : '-'}{fmt(t.amount)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Mobile View */}
+                            <div className="mobile-list-container">
+                                {recent.map(t => (
+                                    <div key={t._id} className="mobile-card">
+                                        <div className="mobile-card-main">
+                                            <div className="mobile-card-title">{t.category}</div>
+                                            <div className="mobile-card-sub">{new Date(t.date).toLocaleDateString()}</div>
+                                        </div>
+                                        <div className="mobile-card-side">
+                                            <div className="mobile-card-amount" style={{ color: t.type === 'income' ? 'var(--accent-dark)' : 'var(--danger)' }}>
                                                 {t.type === 'income' ? '+' : '-'}{fmt(t.amount)}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                            </div>
+                                            <span className={`badge badge-${t.type}`} style={{ fontSize: 10 }}>{t.type}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
                     )}
             </div>
         </div>
