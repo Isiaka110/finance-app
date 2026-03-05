@@ -39,14 +39,16 @@ export default function SavingsPage() {
             const amount = parseFloat(rawAmt);
             if (isNaN(amount)) { alert('Please enter a valid amount'); setSaving(false); return; }
             const remaining = depositModal.targetAmount - depositModal.savedAmount;
+
+            let actualAmount = amount;
+            let excess = 0;
             if (amount > remaining) {
-                alert(`You can only deposit up to ${fmt(remaining)} to complete this goal.`);
-                setSaving(false);
-                return;
+                actualAmount = remaining;
+                excess = amount - remaining;
             }
 
-            const newSaved = depositModal.savedAmount + amount;
-            await API.put(`/goals/${depositModal._id}`, { savedAmount: newSaved });
+            const newSaved = depositModal.savedAmount + actualAmount;
+            await API.put(`/goals/${depositModal._id}`, { savedAmount: newSaved, excessAmt: excess });
             setDepositModal(null); setDepositAmt(''); load();
         } finally { setSaving(false); }
     };
@@ -138,6 +140,11 @@ export default function SavingsPage() {
                             <div className="form-group">
                                 <label className="form-label">Enter amount</label>
                                 <input className="form-input" type="text" placeholder="e.g. 10,000" value={depositAmt} onChange={e => setDepositAmt(e.target.value.replace(/[^0-9.,]/g, ''))} autoFocus required />
+                            </div>
+                            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                                <button type="button" className="btn btn-sm btn-ghost" onClick={() => setDepositAmt(Math.ceil(depositModal.targetAmount / 10).toLocaleString())}>x10</button>
+                                <button type="button" className="btn btn-sm btn-ghost" onClick={() => setDepositAmt(Math.ceil(depositModal.targetAmount / 5).toLocaleString())}>x5</button>
+                                <button type="button" className="btn btn-sm btn-ghost" onClick={() => setDepositAmt(Math.ceil(depositModal.targetAmount / 3).toLocaleString())}>x3</button>
                             </div>
                             <div className="modal-actions">
                                 <button type="button" className="btn btn-ghost" onClick={() => setDepositModal(null)}>Cancel</button>

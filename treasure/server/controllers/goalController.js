@@ -38,6 +38,9 @@ export const updateGoal = async (req, res) => {
 
         if (!wasCompleted && goal.completed) {
             await createNotification(req.userId, '🎉 Goal Completed!', `Congratulations! You reached your savings goal: "${goal.name}".`, 'success', '/dashboard/savings');
+            if (req.body.excessAmt > 0) {
+                await createNotification(req.userId, 'Extra Funds Available', `Your deposit exceeded the "${goal.name}" target by ₦${req.body.excessAmt.toLocaleString(undefined, { minimumFractionDigits: 2 })}. You can use the excess elsewhere!`, 'info', '/dashboard/savings');
+            }
         } else if (req.body.savedAmount !== undefined && !goal.completed) {
             await createNotification(req.userId, 'Goal Progress', `You made a deposit towards "${goal.name}". Keep it up!`, 'info', '/dashboard/savings');
         } else if (req.body.name || req.body.targetAmount) {
