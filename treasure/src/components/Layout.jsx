@@ -8,7 +8,9 @@ const NAV_ITEMS = [
     { path: '/dashboard/income', label: 'Income', icon: '💰' },
     { path: '/dashboard/expenses', label: 'Expenses', icon: '💸' },
     { path: '/dashboard/savings', label: 'Savings Goals', icon: '🎯' },
+    { path: '/dashboard/history', label: 'History', icon: '📋' },
     { path: '/dashboard/analytics', label: 'Analytics', icon: '📈' },
+    { path: '/dashboard/notifications', label: 'Notifications', icon: '🔔' },
     { path: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
 ];
 
@@ -27,6 +29,11 @@ export default function Layout() {
 
     useEffect(() => {
         fetchUnread();
+        const interval = setInterval(() => {
+            fetchUnread();
+        }, 10000); // Poll every 10 seconds for real-time feel
+
+        return () => clearInterval(interval);
     }, [location.pathname]);
 
     const handleLogout = () => { logout(); navigate('/auth'); };

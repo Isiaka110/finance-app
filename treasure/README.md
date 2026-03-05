@@ -7,22 +7,25 @@ FinTrack is a comprehensive, modern web application designed specifically for st
 - **Auth System**: Secure login and sign-up with password encryption and JWT session management.
 - **Onboarding**: A friendly 3-step walkthrough for new users to explain key features.
 - **Dynamic Dashboard**:
-  - Real-time summary of Total Income, Total Expenses, and Current Balance.
+  - Automatically calculates **True Remaining Liquid Cash** (Total Income - Expenses - Total Saved).
+  - Clickable status cards to navigate directly to their respective pages.
   - Interactive **Pie Chart** for expense distribution.
   - **Bar Chart** for monthly financial overview.
-  - Quick-view list of recent transactions.
-- **Income Management**: Track your sources of money (allowances, jobs, scholarships) with easy editing and history logs.
-- **Expense Tracking**: Categorize spending (Food, Transport, Books, etc.) to see exactly where your money goes.
-- **Savings Goals**: Set financial targets with names and amounts. Track your progress with animated bars and celebrate when goals are reached!
+- **Notifications System**: Real-time polling notification bell built into the navigation. Automatically alerts you on:
+  - 100% Savings Goal Completion.
+  - If excess funds are deposited beyond the target amount.
+  - CRUD operations logic for goals and transactions.
+- **Income & Expense Tracking**: Track your sources of money with robust input fields that automatically format and parse comma-separated numbers gracefully (e.g. `30,000`).
+- **Savings Goals**: Set financial targets with names and amounts. Includes rapid auto-deposit multiplier buttons (`x10`, `x5`, `x3`).
 - **Analytics**: Deep-dive into your financial trends with monthly growth charts and category breakdowns.
-- **Mobile Responsive**: Fully optimized for use on desktops, tablets, and smartphones.
+- **Mobile Responsive**: Fully optimized for use on desktops, tablets, and smartphones using grid and flex layouts.
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: Vite, React, Recharts (for data visualization), Axios, React Router.
 - **Backend**: Node.js, Express.
-- **Database**: MongoDB (via Mongoose) — Scalable NoSQL database for structured financial data.
-- **Security**: Bcrypt.js for password hashing and JSON Web Tokens (JWT) for authentication.
+- **Database**: MongoDB (via Mongoose) — Scalable NoSQL database for structured financial data including a `Notification` Schema.
+- **Security**: Bcrypt.js for password hashing and JSON Web Tokens (JWT) for authentication. Login restricted strictly to Email/Phone and password matching.
 
 ---
 

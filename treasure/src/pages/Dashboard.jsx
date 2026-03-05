@@ -21,7 +21,8 @@ export default function Dashboard() {
 
     const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
     const totalExpense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-    const balance = totalIncome - totalExpense;
+    const totalSaved = goals.reduce((s, g) => s + g.savedAmount, 0);
+    const balance = totalIncome - totalExpense - totalSaved;
 
     // Pie chart — expense by category
     const expenseByCategory = transactions
@@ -81,7 +82,7 @@ export default function Dashboard() {
                 <div className="card" style={{ marginBottom: 24 }}>
                     <div className="card-header">
                         <div className="card-title">🎯 Savings Goals Progress</div>
-                        <Link to="/savings" className="btn btn-ghost btn-sm">View All</Link>
+                        <Link to="/dashboard/savings" className="btn btn-ghost btn-sm">View All</Link>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                         {goals.slice(0, 3).map(g => {
