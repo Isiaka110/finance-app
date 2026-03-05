@@ -24,7 +24,9 @@ export default function ExpensePage() {
     const handleSave = async (e) => {
         e.preventDefault(); setError(''); setSaving(true);
         try {
-            const payload = { ...form, type: 'expense', amount: parseFloat(form.amount) };
+            const rawAmt = form.amount.toString().replace(/,/g, '');
+            const payload = { ...form, type: 'expense', amount: parseFloat(rawAmt) };
+            if (isNaN(payload.amount)) return setError('Please enter a valid amount');
             if (editing) await API.put(`/transactions/${editing._id}`, payload);
             else await API.post('/transactions', payload);
             setModal(false); load();
@@ -118,8 +120,8 @@ export default function ExpensePage() {
                         <form onSubmit={handleSave}>
                             <div className="form-row">
                                 <div className="form-group">
-                                    <label className="form-label">Amount (₦)</label>
-                                    <input className="form-input" type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} required />
+                                    <label className="form-label">Enter amount</label>
+                                    <input className="form-input" type="text" placeholder="e.g. 5,000" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value.replace(/[^0-9.,]/g, '') }))} required />
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Date</label>

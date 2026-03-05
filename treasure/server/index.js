@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import goalRoutes from './routes/goalRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import { getDb } from './db.js';
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/goals', goalRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.get('/api/health', (_, res) => res.json({ status: 'ok', db: 'MongoDB' }));
 
 const PORT = process.env.PORT || 5000;

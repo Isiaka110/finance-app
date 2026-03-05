@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
 
@@ -11,6 +11,7 @@ export default function Dashboard() {
     const [transactions, setTransactions] = useState([]);
     const [goals, setGoals] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         Promise.all([API.get('/transactions'), API.get('/goals')])
@@ -49,25 +50,29 @@ export default function Dashboard() {
 
             {/* Stat Cards */}
             <div className="stat-grid">
-                <div className="stat-card income">
+                <div className="stat-card income" onClick={() => navigate('/dashboard/income')} style={{ cursor: 'pointer', position: 'relative' }}>
                     <div className="stat-label">Total Income</div>
                     <div className="stat-value green">{fmt(totalIncome)}</div>
                     <div className="stat-icon">💰</div>
+                    <div style={{ position: 'absolute', top: 12, right: 12, fontSize: 16, opacity: 0.5 }}>↗</div>
                 </div>
-                <div className="stat-card expense">
+                <div className="stat-card expense" onClick={() => navigate('/dashboard/expenses')} style={{ cursor: 'pointer', position: 'relative' }}>
                     <div className="stat-label">Total Expenses</div>
                     <div className="stat-value red">{fmt(totalExpense)}</div>
                     <div className="stat-icon">💸</div>
+                    <div style={{ position: 'absolute', top: 12, right: 12, fontSize: 16, opacity: 0.5 }}>↗</div>
                 </div>
-                <div className="stat-card balance">
+                <div className="stat-card balance" onClick={() => navigate('/dashboard/history')} style={{ cursor: 'pointer', position: 'relative' }}>
                     <div className="stat-label">Balance</div>
                     <div className={`stat-value ${balance >= 0 ? 'blue' : 'red'}`}>{fmt(balance)}</div>
                     <div className="stat-icon">💳</div>
+                    <div style={{ position: 'absolute', top: 12, right: 12, fontSize: 16, opacity: 0.5 }}>↗</div>
                 </div>
-                <div className="stat-card savings">
+                <div className="stat-card savings" onClick={() => navigate('/dashboard/savings')} style={{ cursor: 'pointer', position: 'relative' }}>
                     <div className="stat-label">Savings Goals</div>
                     <div className="stat-value">{goals.length}</div>
                     <div className="stat-icon">🎯</div>
+                    <div style={{ position: 'absolute', top: 12, right: 12, fontSize: 16, opacity: 0.5 }}>↗</div>
                 </div>
             </div>
 

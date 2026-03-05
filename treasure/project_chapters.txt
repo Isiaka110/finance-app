@@ -1,0 +1,253 @@
+# CHAPTER THREE: SYSTEM ANALYSIS AND DESIGN
+
+## 3.1 Introduction
+This chapter discusses the methodology adopted for the development of the FinTrack Personal Finance and Savings Management System. It outlines the system architecture, design specifications, database design, and the various tools and technologies employed to build the application.
+
+## 3.2 System Architecture
+The application follows a modern Client-Server architecture based on the MERN-like stack (MongoDB, Express.js, React, Node.js). 
+1. **Presentation Layer (Frontend):** Built with React.js and Vite. This layer handles the user interface, routing (react-router-dom), state management, and data visualization (recharts). It is highly responsive and optimized for mobile and desktop screens.
+2. **Application Layer (Backend):** Built with Node.js and Express.js. This layer serves as the RESTful API that handles business logic, user authentication (via JWT and bcrypt), and data processing.
+3. **Data Layer (Database):** Uses MongoDB (via Mongoose ODM) to store unstructured data securely and efficiently, replacing the traditional relational database approach for better scalability.
+
+## 3.3 Choice of Technologies
+The choice of technology stack was carefully evaluated to ensure the system is robust, modern, scalable, and tailored to the unique goals of building a seamless cross-platform financial management tool. Using a decoupled (API-driven) architecture allowed the frontend application to function independently from the server logic.
+
+### 3.3.1 Frontend Technologies
+- **React.js:** Chosen for its component-based architecture, which promotes reusability and maintainability of the UI code (e.g., individual modular components for Transaction Cards, Goal Progress bars, and Navigations).
+- **Vite:** Replaced traditional Webpack tools like Create-React-App. Vite offers significantly faster hot module replacement (HMR) during development and highly optimized build bundles for production.
+- **Vanilla CSS:** Instead of relying on CSS frameworks like Tailwind or Bootstrap, the design was constructed using pure, scoped CSS utilizing modern CSS variables (`var(--accent)`). This allowed for absolute control over micro-animations, glassmorphism overlays, and optimal mobile-responsive grid layouts without library bloat.
+- **Recharts:** A composable charting library built on React components. It was utilized to render dynamic, animated, SVG-based pie charts and bar charts for the analytics and dashboard screens.
+- **Axios:** Implemented to handle all HTTP operations (GET, POST, PUT, DELETE) asynchronously between the client and the RESTful APIs over the network, carrying authentication tokens transparently.
+
+### 3.3.2 Backend Technologies
+- **Node.js:** Provided a non-blocking, event-driven runtime environment, ideal for tracking real-time data inputs from multiple clients.
+- **Express.js:** Selected as the minimal web framework for routing an organized API structure. It allows for the easy implementation of middleware (such as JSON parsing, CORS management, and JWT validation).
+- **JWT (JSON Web Tokens):** Used over standard session cookies for authentication. JWT provides stateless communication; the server validates a token string sent by the client, making the backend more perfectly suited for modern serverless scaling (e.g., Vercel deployment).
+- **Bcrypt.js:** Utilized to defend against security breaches. User passwords are salted and hashed on registration, ensuring that raw passwords are never stored in the database.
+
+### 3.3.3 Database Technologies
+- **MongoDB Atlas:** The system shifted from a local SQLite approach to a hosted MongoDB cloud infrastructure. As a NoSQL database, MongoDB handles the unstructured arrays of JSON documents natively. This document-based model is more aligned with the JavaScript-heavy application stack.
+- **Mongoose ODM:** Acted as the Object Data Modeling library to enforce schemas and structure across the generic MongoDB clusters (ensuring that a `Transaction` requires an `amount` and `type`, and a `Goal` enforces a valid `targetAmount`).
+
+## 3.4 Database Design
+The system relies on a non-relational database schema structured through Mongoose collections:
+- **Users Collection:** Stores user authentication details (fullName, emailOrPhone, hashed password).
+- **Transactions Collection:** Records all income and expense entries, linked to the user via a reference ID (`userId`). Includes fields for amount, type, category, date, and source/note.
+- **Goals Collection:** Stores savings targets, tracking `targetAmount` and `savedAmount`.
+
+## 3.5 User Interface Design
+The user interface is built with a "mobile-first" approach. Key interfaces include:
+- **Landing Page & Onboarding:** Welcomes users and explains platform features.
+- **Dashboard:** Provides at-a-glance financial summaries using dynamic pie and bar charts.
+- **Income/Expense Trackers:** Allow users to log daily financial activities.
+- **Savings Goals:** Visual progress bars indicating how close a user is to their target.
+
+
+# CHAPTER FOUR: SYSTEM IMPLEMENTATION AND TESTING
+
+## 4.1 Introduction
+This chapter focuses on the actual realization of the system design discussed in Chapter Three. It details the development environment, system requirements, implementation phases, and the software testing process to ensure the system is bug-free and meets the specified requirements.
+
+## 4.2 System Requirements
+### 4.2.1 Hardware Requirements
+- **Development:** A computer with at least 4GB RAM, Core i3 processor or equivalent, and 20GB free storage.
+- **Deployment/Client:** Any standard smartphone, tablet, or PC with an active internet connection.
+
+### 4.2.2 Software Requirements
+- Operating System: Windows, macOS, or Linux.
+- Web Browser: Chrome, Firefox, Safari, or Edge.
+- Node.js (v18+) and npm.
+- MongoDB Local Server or MongoDB Atlas Account.
+
+## 4.3 Implementation Details
+The project was implemented by dividing the system into modular components:
+1. **Backend Implementation:** Starting with setting up the Express server, defining Mongoose models (`User`, `Transaction`, `Goal`), and creating API routes. The authentication controllers securely handle password encryption and token generation.
+2. **Frontend Implementation:** Built using Vite. Reusable React components were created, such as `Layout.jsx` for navigation and `AuthContext.jsx` for managing global user states. 
+3. **Integration:** The frontend communicates with the backend via Axios, sending JWT tokens in the headers to access protected routes.
+
+## 4.4 System Testing
+To ensure reliability, the system was subjected to various testing strategies:
+- **Unit Testing:** Individual components and API endpoints were tested to ensure they handle correct and incorrect inputs appropriately (e.g., preventing negative deposit amounts).
+- **Integration Testing:** Verified that the frontend successfully sends API requests and accurately reflects backend database changes (e.g., adding an expense immediately updates the dashboard charts).
+- **Usability & Responsive Testing:** The application was tested across various screen sizes (Mobile, Tablet, Desktop) to ensure UI elements like charts, navigation bars, and data tables render correctly without overlapping.
+
+## 4.5 Deployment
+The application is designed for cloud deployment. The backend and frontend can be seamlessly deployed on platforms like Vercel or Heroku. Environment variables (`MONGO_URI`, `JWT_SECRET`) are configured in the host environment to ensure security.
+
+---
+
+# APPENDICES
+
+## Appendix A: Source Code Excerpts
+
+### A.1 Server Entry Point (server/index.js)
+```javascript
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js';
+import transactionRoutes from './routes/transactionRoutes.js';
+import goalRoutes from './routes/goalRoutes.js';
+import { getDb } from './db.js';
+
+dotenv.config();
+const app = express();
+
+app.use(cors({ origin: '*', credentials: true }));
+app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/goals', goalRoutes);
+
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
+const PORT = process.env.PORT || 5000;
+getDb().then(() => {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}).catch(err => {
+    console.error('Failed to connect to DB on startup', err);
+});
+```
+
+### A.2 Database Connection & Configuration (server/db.js)
+```javascript
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const MONGO_URI = process.env.MONGO_URI;
+
+export const getDb = async () => {
+    if (mongoose.connection.readyState >= 1) return;
+
+    try {
+        await mongoose.connect(MONGO_URI);
+        console.log('MongoDB connected successfully');
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        throw error; // Throw error to be caught by entry point
+    }
+};
+```
+
+### A.3 Centralized Axios API Handler (src/api/axios.js)
+```javascript
+import axios from 'axios';
+
+const API = axios.create({
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+});
+
+// Interceptor to attach the JWT Token to every single request
+API.interceptors.request.use((config) => {
+    const token = localStorage.getItem('financeToken');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export default API;
+```
+
+### A.4 JWT Authentication Middleware (server/middleware/auth.js)
+```javascript
+import jwt from 'jsonwebtoken';
+
+const SECRET = process.env.JWT_SECRET || 'finance_secret';
+
+const auth = (req, res, next) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) return res.status(401).json({ message: "Unauthorized. No token provided." });
+
+        const decoded = jwt.verify(token, SECRET);
+        req.userId = decoded.id;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: "Unauthorized. Invalid token." });
+    }
+};
+
+export default auth;
+```
+
+### A.5 User Authentication Controller (server/controllers/authController.js)
+```javascript
+export const login = async (req, res) => {
+    try {
+        const { emailOrPhone, password } = req.body;
+        if (!emailOrPhone || !password)
+            return res.status(400).json({ message: 'All fields are required' });
+
+        const user = await User.findOne({ emailOrPhone });
+        if (!user) return res.status(404).json({ message: 'No account found with that email/phone' });
+
+        if (!bcrypt.compareSync(password, user.password))
+            return res.status(400).json({ message: 'Incorrect password' });
+
+        const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: '7d' });
+        res.json({ token, user: { id: user._id, fullName: user.fullName, emailOrPhone: user.emailOrPhone }, isNew: false });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+```
+
+### A.6 Frontend Auth Context (src/context/AuthContext.jsx)
+```javascript
+import { createContext, useContext, useState } from 'react';
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(() => {
+        const s = localStorage.getItem('financeUser');
+        return s ? JSON.parse(s) : null;
+    });
+
+    const login = (userData, token, isNew = false) => {
+        const u = { ...userData, isNew };
+        setUser(u);
+        localStorage.setItem('financeUser', JSON.stringify(u));
+        localStorage.setItem('financeToken', token);
+    };
+
+    const logout = () => {
+        setUser(null);
+        localStorage.removeItem('financeUser');
+        localStorage.removeItem('financeToken');
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+export const useAuth = () => useContext(AuthContext);
+```
+
+### A.7 Dashboard Component Excerpt (src/pages/Dashboard.jsx)
+```javascript
+// Analytics extraction
+const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+const totalExpense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+const balance = totalIncome - totalExpense;
+
+// Chart rendering layout
+<div className="chart-card">
+    <div className="chart-title">Expense Breakdown</div>
+    <ResponsiveContainer width="100%" height={220}>
+        <PieChart>
+            <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+            </Pie>
+            <Tooltip formatter={(v) => fmt(v)} />
+        </PieChart>
+    </ResponsiveContainer>
+</div>
+```

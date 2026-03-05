@@ -26,40 +26,58 @@ FinTrack is a comprehensive, modern web application designed specifically for st
 
 ---
 
-## 🚀 Getting Started (Local)
+## 🚀 Step-by-Step Local Deployment Workflow
 
-### 1. Prerequisites
-- [Node.js](https://nodejs.org/) (Version 18 or later recommended)
-- `npm` (comes with Node.js)
-- [MongoDB](https://www.mongodb.com/try/download/community) installed locally OR a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account.
+Follow these exact steps to run the application on your computer:
 
-### 2. Installation
-1.  **Clone or Download** the project to your local machine.
-2.  Open your terminal and navigate to the root directory:
-    ```bash
-    cd treasure
-    ```
-3.  Install all dependencies:
-    ```bash
-    npm install
-    ```
+### Step 1: Install Prerequisites
+1. Download and install **Node.js**: [https://nodejs.org/](https://nodejs.org/) (Version 18+ recommended)
+2. Ensure you have `git` installed to clone or download the repository.
+3. You need a **MongoDB** database. You can:
+   - Install it locally: [MongoDB Community Server](https://www.mongodb.com/try/download/community)
+   - Or create a free cloud database: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 
-### 3. Environment Variables
-Create a file named `.env` in the root directory and add the following:
-```env
-VITE_API_URL=http://localhost:5000/api
-JWT_SECRET=your_secret_key_here
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/finance_app
+### Step 2: Open to the Project Directory
+1. Open your terminal or command prompt (Windows PowerShell works great).
+2. Navigate to the project directory where you downloaded it. For example:
+   ```bash
+   cd C:/Users/YourName/Desktop/treasure
+   ```
+
+### Step 3: Install Project Dependencies
+Run the following command to install all the required packages for both the frontend (React) and the backend (Express):
+```bash
+npm install
 ```
+*(Wait a few minutes for the installation to complete)*
 
-### 4. Running the App
-Run both the frontend and the backend simultaneously with one command:
+### Step 4: Configure Environment Variables
+1. In the root directory of the project (inside the `treasure` folder), create a new file named `.env`.
+2. Open the `.env` file in your text editor (like VS Code or Notepad).
+3. Copy and paste the following keys into the file:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   JWT_SECRET=super_secret_finance_key_123
+   PORT=5000
+   MONGO_URI=mongodb://localhost:27017/finance_app
+   ```
+   > **Note:** If you are using MongoDB Atlas, replace the `MONGO_URI` value with your actual connection string (e.g., `mongodb+srv://<username>:<password>@cluster0.mongodb.net/`). Make sure to replace `<username>` and `<password>` with your database details.
+
+### Step 5: Start the Application
+You don't need to open two terminals! The project is configured to run both the frontend and backend with a single command. 
+Run this command in your terminal:
 ```bash
 npm run dev
 ```
-- **Frontend URL**: `http://localhost:5173`
-- **Backend API**: `http://localhost:5000/api`
+You should see output indicating that:
+- The Server is running on port 5000 (`Server running on port 5000`)
+- The Frontend is running on port 5173 (`VITE v5.x.x ready in x ms`)
+- The Database has connected (`MongoDB connected successfully`)
+
+### Step 6: View in your Browser
+1. Open your web browser (Chrome, Edge, Safari, etc.).
+2. Go to the dashboard URL: [http://localhost:5173](http://localhost:5173)
+3. You will see the newly polished Landing Page. Click **Start for Free** to register an account and view the dashboard!
 
 ---
 

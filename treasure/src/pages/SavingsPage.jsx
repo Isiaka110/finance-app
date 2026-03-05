@@ -23,7 +23,9 @@ export default function SavingsPage() {
     const handleSave = async (e) => {
         e.preventDefault(); setSaving(true);
         try {
-            const payload = { name: form.name, targetAmount: parseFloat(form.targetAmount) };
+            const rawAmt = form.targetAmount.toString().replace(/,/g, '');
+            const payload = { name: form.name, targetAmount: parseFloat(rawAmt) };
+            if (isNaN(payload.targetAmount)) { alert('Please enter a valid amount'); setSaving(false); return; }
             if (editing) await API.put(`/goals/${editing._id}`, payload);
             else await API.post('/goals', payload);
             setModal(false); load();
@@ -33,7 +35,9 @@ export default function SavingsPage() {
     const handleDeposit = async (e) => {
         e.preventDefault(); setSaving(true);
         try {
-            const amount = parseFloat(depositAmt);
+            const rawAmt = depositAmt.toString().replace(/,/g, '');
+            const amount = parseFloat(rawAmt);
+            if (isNaN(amount)) { alert('Please enter a valid amount'); setSaving(false); return; }
             const remaining = depositModal.targetAmount - depositModal.savedAmount;
             if (amount > remaining) {
                 alert(`You can only deposit up to ${fmt(remaining)} to complete this goal.`);
@@ -110,8 +114,8 @@ export default function SavingsPage() {
                                 <input className="form-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. New Laptop" required />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Target Amount (₦)</label>
-                                <input className="form-input" type="number" min="1" step="0.01" value={form.targetAmount} onChange={e => setForm(f => ({ ...f, targetAmount: e.target.value }))} required />
+                                <label className="form-label">Enter amount</label>
+                                <input className="form-input" type="text" placeholder="e.g. 50,000" value={form.targetAmount} onChange={e => setForm(f => ({ ...f, targetAmount: e.target.value.replace(/[^0-9.,]/g, '') }))} required />
                             </div>
                             <div className="modal-actions">
                                 <button type="button" className="btn btn-ghost" onClick={() => setModal(false)}>Cancel</button>
@@ -132,8 +136,8 @@ export default function SavingsPage() {
                         </p>
                         <form onSubmit={handleDeposit}>
                             <div className="form-group">
-                                <label className="form-label">Deposit Amount (₦)</label>
-                                <input className="form-input" type="number" min="0.01" step="0.01" value={depositAmt} onChange={e => setDepositAmt(e.target.value)} autoFocus required />
+                                <label className="form-label">Enter amount</label>
+                                <input className="form-input" type="text" placeholder="e.g. 10,000" value={depositAmt} onChange={e => setDepositAmt(e.target.value.replace(/[^0-9.,]/g, ''))} autoFocus required />
                             </div>
                             <div className="modal-actions">
                                 <button type="button" className="btn btn-ghost" onClick={() => setDepositModal(null)}>Cancel</button>
