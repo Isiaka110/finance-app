@@ -8,6 +8,7 @@ const NAV_ITEMS = [
     { path: '/dashboard/expenses', label: 'Expenses', icon: '💸' },
     { path: '/dashboard/savings', label: 'Savings Goals', icon: '🎯' },
     { path: '/dashboard/analytics', label: 'Analytics', icon: '📈' },
+    { path: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
 ];
 
 export default function Layout() {
@@ -54,10 +55,10 @@ export default function Layout() {
             </aside>
 
             <div className="main-content">
-                <header className="topbar">
+                <header className="topbar" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
                     <button className="hamburger" onClick={() => setSidebarOpen(o => !o)}>☰</button>
                     <div className="topbar-title">FinTrack</div>
-                    <div className="topbar-user">
+                    <div className="topbar-user" onClick={() => navigate('/dashboard/settings')} style={{ cursor: 'pointer' }}>
                         <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                             Hi, <strong>{user?.fullName?.split(' ')[0]}</strong>
                         </span>
@@ -71,6 +72,6 @@ export default function Layout() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

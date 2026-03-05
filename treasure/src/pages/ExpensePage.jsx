@@ -25,7 +25,7 @@ export default function ExpensePage() {
         e.preventDefault(); setError(''); setSaving(true);
         try {
             const payload = { ...form, type: 'expense', amount: parseFloat(form.amount) };
-            if (editing) await API.put(`/transactions/${editing.id}`, payload);
+            if (editing) await API.put(`/transactions/${editing._id}`, payload);
             else await API.post('/transactions', payload);
             setModal(false); load();
         } catch (err) { setError(err.response?.data?.message || 'Error saving'); }
@@ -71,7 +71,7 @@ export default function ExpensePage() {
                                     <thead><tr><th>Date</th><th>Category</th><th>Notes</th><th>Amount</th><th>Actions</th></tr></thead>
                                     <tbody>
                                         {displayed.map(t => (
-                                            <tr key={t.id}>
+                                            <tr key={t._id}>
                                                 <td>{new Date(t.date).toLocaleDateString()}</td>
                                                 <td>{CAT_ICONS[t.category] || '📦'} <strong>{t.category}</strong></td>
                                                 <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || '—'}</td>
@@ -79,7 +79,7 @@ export default function ExpensePage() {
                                                 <td>
                                                     <div style={{ display: 'flex', gap: 6 }}>
                                                         <button className="btn-icon" onClick={() => openEdit(t)}>✏️</button>
-                                                        <button className="btn-icon danger" onClick={() => handleDelete(t.id)}>🗑️</button>
+                                                        <button className="btn-icon danger" onClick={() => handleDelete(t._id)}>🗑️</button>
                                                     </div>
                                                 </td>
                                             </tr>

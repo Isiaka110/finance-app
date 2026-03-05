@@ -24,7 +24,7 @@ export default function SavingsPage() {
         e.preventDefault(); setSaving(true);
         try {
             const payload = { name: form.name, targetAmount: parseFloat(form.targetAmount) };
-            if (editing) await API.put(`/goals/${editing.id}`, payload);
+            if (editing) await API.put(`/goals/${editing._id}`, payload);
             else await API.post('/goals', payload);
             setModal(false); load();
         } finally { setSaving(false); }
@@ -34,7 +34,7 @@ export default function SavingsPage() {
         e.preventDefault(); setSaving(true);
         try {
             const newSaved = depositModal.savedAmount + parseFloat(depositAmt);
-            await API.put(`/goals/${depositModal.id}`, { savedAmount: newSaved });
+            await API.put(`/goals/${depositModal._id}`, { savedAmount: newSaved });
             setDepositModal(null); setDepositAmt(''); load();
         } finally { setSaving(false); }
     };
@@ -60,7 +60,7 @@ export default function SavingsPage() {
                             {goals.map(g => {
                                 const pct = Math.min(100, Math.round((g.savedAmount / g.targetAmount) * 100));
                                 return (
-                                    <div key={g.id} className="card">
+                                    <div key={g._id} className="card">
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
@@ -82,7 +82,7 @@ export default function SavingsPage() {
                                                     </button>
                                                 )}
                                                 <button className="btn-icon" onClick={() => openEdit(g)}>✏️</button>
-                                                <button className="btn-icon danger" onClick={() => handleDelete(g.id)}>🗑️</button>
+                                                <button className="btn-icon danger" onClick={() => handleDelete(g._id)}>🗑️</button>
                                             </div>
                                         </div>
                                     </div>

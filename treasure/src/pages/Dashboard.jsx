@@ -82,7 +82,7 @@ export default function Dashboard() {
                         {goals.slice(0, 3).map(g => {
                             const pct = Math.min(100, Math.round((g.savedAmount / g.targetAmount) * 100));
                             return (
-                                <div key={g.id}>
+                                <div key={g._id}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                                         <span style={{ fontWeight: 600, fontSize: 14 }}>{g.name} {g.completed ? '✅' : ''}</span>
                                         <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{fmt(g.savedAmount)} / {fmt(g.targetAmount)} ({pct}%)</span>
@@ -144,7 +144,7 @@ export default function Dashboard() {
                                 <thead><tr><th>Date</th><th>Category</th><th>Notes</th><th>Type</th><th>Amount</th></tr></thead>
                                 <tbody>
                                     {recent.map(t => (
-                                        <tr key={t.id}>
+                                        <tr key={t._id}>
                                             <td>{new Date(t.date).toLocaleDateString()}</td>
                                             <td>{t.category}</td>
                                             <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || t.source || '—'}</td>

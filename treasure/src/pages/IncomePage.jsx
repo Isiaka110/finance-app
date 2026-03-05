@@ -25,7 +25,7 @@ export default function IncomePage() {
         e.preventDefault(); setError(''); setSaving(true);
         try {
             const payload = { ...form, type: 'income', amount: parseFloat(form.amount) };
-            if (editing) await API.put(`/transactions/${editing.id}`, payload);
+            if (editing) await API.put(`/transactions/${editing._id}`, payload);
             else await API.post('/transactions', payload);
             setModal(false); load();
         } catch (err) { setError(err.response?.data?.message || 'Error saving'); }
@@ -59,7 +59,7 @@ export default function IncomePage() {
                                     <thead><tr><th>Date</th><th>Source/Category</th><th>Notes</th><th>Amount</th><th>Actions</th></tr></thead>
                                     <tbody>
                                         {list.map(t => (
-                                            <tr key={t.id}>
+                                            <tr key={t._id}>
                                                 <td>{new Date(t.date).toLocaleDateString()}</td>
                                                 <td><strong>{t.category}</strong> {t.source && <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>· {t.source}</span>}</td>
                                                 <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t.note || '—'}</td>
@@ -67,7 +67,7 @@ export default function IncomePage() {
                                                 <td>
                                                     <div style={{ display: 'flex', gap: 6 }}>
                                                         <button className="btn-icon" onClick={() => openEdit(t)} title="Edit">✏️</button>
-                                                        <button className="btn-icon danger" onClick={() => handleDelete(t.id)} title="Delete">🗑️</button>
+                                                        <button className="btn-icon danger" onClick={() => handleDelete(t._id)} title="Delete">🗑️</button>
                                                     </div>
                                                 </td>
                                             </tr>
