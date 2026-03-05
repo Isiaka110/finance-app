@@ -33,7 +33,15 @@ export default function SavingsPage() {
     const handleDeposit = async (e) => {
         e.preventDefault(); setSaving(true);
         try {
-            const newSaved = depositModal.savedAmount + parseFloat(depositAmt);
+            const amount = parseFloat(depositAmt);
+            const remaining = depositModal.targetAmount - depositModal.savedAmount;
+            if (amount > remaining) {
+                alert(`You can only deposit up to ${fmt(remaining)} to complete this goal.`);
+                setSaving(false);
+                return;
+            }
+
+            const newSaved = depositModal.savedAmount + amount;
             await API.put(`/goals/${depositModal._id}`, { savedAmount: newSaved });
             setDepositModal(null); setDepositAmt(''); load();
         } finally { setSaving(false); }

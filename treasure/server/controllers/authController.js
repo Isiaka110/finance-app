@@ -42,3 +42,25 @@ export const login = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { fullName, emailOrPhone, password } = req.body;
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (emailOrPhone && emailOrPhone !== user.emailOrPhone) {
+            const existing = await User.findOne({ emailOrPhone });
+            if (existing) return res.status(400).json({ message: 'Email/Phone already in use' });
+            user.emailOrPhone = emailOrPhone;
+        }
+
+        if (fullName) user.fullName = fullName;
+        if (password) user.password = bcrypt.hashSync(password, 12);
+
+        await user.save();
+        res.json({ success: true, user: { id: user._id, fullName: user.fullName, emailOrPhone: user.emailOrPhone } });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};

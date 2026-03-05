@@ -180,8 +180,10 @@ body,
   gap: 16px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 90;
   backdrop-filter: blur(8px);
+  height: 60px;
+  /* Fixed height for consistency */
 }
 
 .topbar-title {
@@ -828,7 +830,8 @@ tr:hover td {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 99;
+    z-index: 150;
+    /* Above topbar */
   }
 
   .hamburger {
@@ -841,8 +844,9 @@ tr:hover td {
 
   .charts-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns as requested */
+    gap: 12px;
   }
 
   .stat-grid {
@@ -880,6 +884,19 @@ tr:hover td {
   .table-wrapper {
     margin: 0 calc(-1 * var(--container-px));
     padding: 0 var(--container-px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+    /* Ensure table doesn't squish too much */
+  }
+
+  th,
+  td {
+    padding: 10px 8px;
+    font-size: 13px;
   }
 }
 
@@ -1154,15 +1171,110 @@ tr:hover td {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
+  .nav-links .nav-link {
     display: none;
+    /* Hide text links like "Features" on mobile */
+  }
+
+  .nav-links {
+    gap: 12px;
   }
 
   .features-grid-landing {
     grid-template-columns: 1fr;
   }
 
+  .landing-nav .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .hero-content h1 {
+    font-size: 38px;
+    margin-bottom: 16px;
+  }
+
+  .hero-content p {
+    font-size: 16px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .landing-nav {
+    padding: 16px 5%;
+  }
+
+  .hero {
+    padding: 60px 5% 80px;
+  }
+
+  .features-section {
+    padding: 60px 5%;
+  }
+
+  .cta-section {
+    padding: 60px 5%;
+  }
+
+  .cta-box {
+    padding: 50px 20px;
+    border-radius: 24px;
+  }
+
   .cta-box h2 {
+    font-size: 28px;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    padding: 40px 5%;
+  }
+
+  /* Onboarding mobile */
+  .onboarding-card {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .onboarding-icon {
+    font-size: 40px;
+  }
+
+  .onboarding-card h2 {
+    font-size: 20px;
+  }
+
+  .onboarding-card p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
     font-size: 32px;
+  }
+
+  .floating-card {
+    display: none;
+    /* Hide floating cards on very small screens to avoid clutter */
+  }
+
+  .hero-image img {
+    border-radius: 16px;
+  }
+
+  /* Onboarding features grid to single column */
+  .features-grid {
+    grid-template-columns: 1fr;
   }
 }
