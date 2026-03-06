@@ -1,4 +1,6 @@
 import Transaction from '../models/Transaction.js';
+import Goal from '../models/Goal.js';
+import Notification from '../models/Notification.js';
 import { createNotification } from './notificationController.js';
 
 
@@ -45,6 +47,22 @@ export const deleteTransaction = async (req, res) => {
     try {
         const tx = await Transaction.findOneAndDelete({ _id: req.params.id, userId: req.userId });
         if (!tx) return res.status(404).json({ message: 'Transaction not found' });
+
+        if (tx.goalId) {
+            const goal = await Goal.findById(tx.goalId);
+            if (goal) {
+                goal.isApproved = false;
+                goal.expenseId = null;
+                await goal.save();
+
+                await Notification.deleteMany({
+                    userId: req.userId,
+                    title: 'Goal Approved',
+                    message: { $regex: goal.name, $options: 'i' }
+                });
+            }
+        }
+
         await createNotification(req.userId, `Transaction Deleted`, `You deleted a ${tx.type} of ₦${tx.amount}.`, 'warning');
         res.json({ message: 'Deleted' });
     } catch (err) { res.status(500).json({ message: err.message }); }

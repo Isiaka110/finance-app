@@ -8,6 +8,7 @@ const TransactionSchema = new mongoose.Schema({
     source: { type: String },
     date: { type: Date, required: true },
     note: { type: String },
+    goalId: { type: mongoose.Schema.Types.ObjectId, ref: 'SavingsGoal' },
     createdAt: { type: Date, default: Date.now }
 });
 

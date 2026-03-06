@@ -1,4 +1,5 @@
 import Goal from '../models/Goal.js';
+import Transaction from '../models/Transaction.js';
 import { createNotification } from './notificationController.js';
 
 export const getGoals = async (req, res) => {
@@ -57,5 +58,33 @@ export const deleteGoal = async (req, res) => {
         if (!goal) return res.status(404).json({ message: 'Goal not found' });
         await createNotification(req.userId, 'Goal Deleted', `You deleted the savings goal: "${goal.name}".`, 'warning', '/dashboard/savings');
         res.json({ message: 'Deleted' });
+    } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+export const approveGoal = async (req, res) => {
+    try {
+        const goal = await Goal.findOne({ _id: req.params.id, userId: req.userId });
+        if (!goal) return res.status(404).json({ message: 'Goal not found' });
+        if (!goal.completed) return res.status(400).json({ message: 'Goal not yet completed' });
+        if (goal.isApproved) return res.status(400).json({ message: 'Goal is already approved' });
+
+        const tx = new Transaction({
+            userId: req.userId,
+            type: 'expense',
+            amount: goal.savedAmount,
+            category: 'Savings Goal',
+            source: 'Goal Completion',
+            date: new Date(),
+            note: `Completion of goal: ${goal.name}`,
+            goalId: goal._id
+        });
+        await tx.save();
+
+        goal.isApproved = true;
+        goal.expenseId = tx._id;
+        await goal.save();
+
+        await createNotification(req.userId, 'Goal Approved', `The cost for "${goal.name}" has been deducted from your balance.`, 'success', '/dashboard/expenses');
+        res.json(goal);
     } catch (err) { res.status(500).json({ message: err.message }); }
 };

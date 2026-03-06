@@ -6,6 +6,8 @@ const SavingsGoalSchema = new mongoose.Schema({
     targetAmount: { type: Number, required: true },
     savedAmount: { type: Number, default: 0 },
     completed: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
+    expenseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' },
     createdAt: { type: Date, default: Date.now }
 });
 

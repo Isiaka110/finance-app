@@ -21,7 +21,7 @@ export default function Dashboard() {
 
     const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
     const totalExpense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-    const totalSaved = goals.reduce((s, g) => s + g.savedAmount, 0);
+    const totalSaved = goals.filter(g => !g.isApproved).reduce((s, g) => s + g.savedAmount, 0);
     const balance = totalIncome - totalExpense - totalSaved;
 
     // Pie chart — expense by category

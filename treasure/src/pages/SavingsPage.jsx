@@ -13,8 +13,22 @@ export default function SavingsPage() {
     const [form, setForm] = useState(EMPTY);
     const [depositAmt, setDepositAmt] = useState('');
     const [saving, setSaving] = useState(false);
+    const [approveConfirm, setApproveConfirm] = useState(null);
 
     const load = () => API.get('/goals').then(r => setGoals(r.data)).finally(() => setLoading(false));
+
+    const handleApprove = async (id) => {
+        setSaving(true);
+        try {
+            await API.post(`/goals/${id}/approve`);
+            setApproveConfirm(null);
+            load();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Approval failed');
+        } finally {
+            setSaving(false);
+        }
+    };
     useEffect(() => { load(); }, []);
 
     const openAdd = () => { setEditing(null); setForm(EMPTY); setModal(true); };
@@ -79,7 +93,8 @@ export default function SavingsPage() {
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                                                     <h3 style={{ fontWeight: 700, fontSize: 16 }}>{g.name}</h3>
-                                                    {g.completed ? <span className="badge badge-done">✅ Completed</span> : null}
+                                                    {g.completed && !g.isApproved ? <span className="badge badge-done">✅ Completed</span> : null}
+                                                    {g.isApproved ? <span className="badge badge-done" style={{ background: 'var(--success, #10b981)', color: '#fff' }}>✔️ Approved</span> : null}
                                                 </div>
                                                 <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 10 }}>
                                                     Saved: <strong style={{ color: 'var(--primary)' }}>{fmt(g.savedAmount)}</strong> of <strong>{fmt(g.targetAmount)}</strong>
@@ -88,6 +103,23 @@ export default function SavingsPage() {
                                                     <div className={`progress-fill ${g.completed ? 'done' : ''}`} style={{ width: `${pct}%` }} />
                                                 </div>
                                                 <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6 }}>{pct}% reached</p>
+                                                {g.completed && !g.isApproved && (
+                                                    <div style={{ marginTop: 16, padding: 12, background: 'var(--bg-card-alt, #f8fafc)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                                                        {approveConfirm === g._id ? (
+                                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                                                                <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>The cost will be deducted from your balance</span>
+                                                                <div style={{ display: 'flex', gap: 8 }}>
+                                                                    <button className="btn-icon danger" onClick={() => setApproveConfirm(null)}>❌</button>
+                                                                    <button className="btn-icon success" onClick={() => handleApprove(g._id)}>✅</button>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <button className="btn btn-primary btn-sm" style={{ width: '100%' }} onClick={() => setApproveConfirm(g._id)}>
+                                                                APPROVE
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                             <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                                                 {!g.completed && (
